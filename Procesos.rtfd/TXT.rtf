@@ -1,0 +1,148 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww8400\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \'97 Proceso \'97\
+- Representaci\'f3n del SO de un programa en ejecuci\'f3n.\
+- Un programa ejecutable b\'e1sicamente es un c\'f3digo y una definici\'f3n de datos, al ponerlo en ejecuci\'f3n necesitamos:\
+	* Asignarle memoria para el c\'f3digo, los datos y la pila.\
+	* Inicializar los registros de la cpu para que se empiece a ejecutar.\
+	* Ofrecer acceso a los dispositivos (ya que necesitan acceso en modo kernel).\
+- Para gestionar la informaci\'f3n de un proceso, el sistema utiliza una estructura de datos llamada PCB (Process Control Block).\
+- Cada vez que ponemos un programa a ejecutar, se crea un nuevo proceso.\
+	* Pueden haber limitaciones en el sistema.\
+\
+\'bfC\'f3mo se hace?\
+	* Shell\
+		# gedit p1.c\
+		# gcc -o p1 p1.c\
+		# p1\
+	* Crear nuevo proceso.\
+	* Ejecutar p1.\
+	* Terminar ejecuci\'f3n.\
+	- Llamadas a sistema (Kernel)\
+		* Crear PCB.\
+		* Iniciarlizar PCB.\
+		* Reservar memoria.\
+		* Copiar c\'f3digo, datos, etc.\
+		* Asignar cpu.\
+		* \'85\
+		* Liberar recursos.\
+		* Liberar PCB.\
+\
+\
+\'97 Process Control Block (PCB) \'97\
+Contiene la informaci\'f3n que el sistema necesita para gestionar un proceso.\
+Esta informaci\'f3n depende del sistema y de la m\'e1quina. Se puede clasificar en estos 3 grupos:\
+	* Espacio de direcciones:\
+		- Descripci\'f3n de las regiones del proceso: c\'f3digo, datos, pila, \'85\
+	* Contexto de ejecuci\'f3n.\
+		- SW: PID (identificador de un proceso), informaci\'f3n para la planificaci\'f3n, informaci\'f3n sobre el uso de dispositivos, estad\'edsticas, \'85\
+		- HW: tabla de p\'e1ginas, program counter, \'85\
+\
+\
+\'97 Concurrencia y paralelismo \'97\
+En un sistema de prop\'f3sito general, lo habitual es tener varios procesos a la vez, de forma que se aproveche al m\'e1ximo los recursos de la m\'e1quina.\
+\'bfPor qu\'e9 nos puede interesar ejecutar m\'faltiples procesos sim\'faltaneamente?\
+	- Si tenemos varios procesadores podemos ejecutar m\'e1s procesos a la vez, uno mismo usando varios procesadores.\
+	- Aprovechar el tiempo de acceso a dispositivos (Entrada/Salida) de un proceso para que otros procesos usen la CPU.\
+\ul Si el SO lo gestiona bien, consigue la ilusi\'f3n de que la m\'e1quina tiene m\'e1s recursos (CPUs) de los que tiene realmente.\
+\
+\ulnone Concurrencia.\
+Se dice que varios procesos son concurrente cuando se tienen la capacidad de ejecutarse en paralelo. si la arquitectura lo permite.\
+Se dice que varios procesos son secuenciales si, independientemente de la arquitectura, se ejecutar\'e1n uno despu\'e9s de otro (cuando termina uno empieza el siguiente). En este caso, es el programador el que fuerza que esto sea as\'ed mediante sincronizaciones.\
+	* Poniendo un waitpid entre un fork y el siguiente.\
+	* Mediante signals (eventos).\
+\
+Paralelismo.\
+Es cuando varios procesos concurrentes se ejecutan de forma simult\'e1nea:\
+	* Depende de la m\'e1quina.\
+	* Depende del conjunto de procesos.\
+	* Depende del SO.\
+\
+\
+\'97 Estados de un proceso \'97\
+No es normal que un proceso est\'e9 todo el tiempo utilizando la CPU, durante periodos de su ejecuci\'f3n podemos encontrarlo:\
+	* Esperando datos de alg\'fan dispositivo: teclado, disco, red, etc.\
+	* Esperando informaci\'f3n de otros procesos.\
+Para aprovechar el HW tenemos:\
+	* Sistemas multiprogramados: m\'faltiples procesos activos. Cada proceso tiene su informaci\'f3n en su propio PCB.\
+	* El SO s\'f3lo asigna CPU a aquellos procesos que est\'e1n utiliz\'e1ndola.\
+El SO tiene \'93clasificados\'94 los procesos en funci\'f3n de \'93qu\'e9 est\'e1n haciendo\'94,  normalmente a esto se llama el \'93ESTADO\'94 del proceso.\
+El estado suele gestionarse o con un campo en el PCB o teniendo diferentes listas o colas con los procesos en un estado concreto.\
+\
+Cada SO define un grado de estados, indicando que eventos generan transiciones entre estados.\
+El grafo define qu\'e9 transiciones son posibles y c\'f3mo se pasa de uno a otro.\
+El grafo de estados, muy simplificado, podr\'eda ser:\
+	- run: El proceso tiene asignada una cpu y esta ejecut\'e1ndose.\
+	- ready: El proceso est\'e1 preparado para ejecutarse pero est\'e1 esperando que se asigne CPU.\
+	- blocked: El proceso no tiene/consume CPU, est\'e1 bloqueado esperando que finalice una entrada/salida de datos o la llegada de un evento.\
+	- zombie: El proceso ha terminado su ejecuci\'f3n pero a\'fan no ha desaparecido de las estructuras de datos del kernel.\
+		* Linux.\ul \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \ulnone {{\NeXTGraphic Captura de Pantalla 2022-05-31 a la(s) 14.37.38.png \width11580 \height7600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+\
+\'97 Propiedades de un proceso \'97\
+Un proceso incluye, no s\'f3lo el programa que ejecuta, sino toda la informaci\'f3n necesaria para diferenciar una ejecuci\'f3n del programa de otra.\
+	* Toda esta informaci\'f3n se almacena en el kernel, en el PCB.\
+En linux, por ejemplo, las propiedades de un proceso se agrupan en tres:\
+	- Identidad: Define qui\'e9n es (identificado, propietario, grupo) y qu\'e9 puede hacer el proceso (recursos a los que puede acceder).\
+		- Process ID (PID). Es un identificador \'fanico para el proceso. Se utiliza para identificar un proceso dentro del sistema. En llamadas a sistema identifica al proceso al cual queremos enviar un evento, modificar, etc.\
+			- El kernel genera uno nuevo para cada proceso que se crea.\
+		- Credenciales: Cada proceso est\'e1 asociado con un usuario (userID) y uno o m\'e1s grupos (groupID). Est\'e1s credenciales determinan los derechos del proceso a acceder a los recursos del sistema y ficheros.\
+	- Entorno: Par\'e1metros (argv en un programa C) y variables de entorno (HOME, PATH, USERNAME, etc.).\
+	- Contexto: Toda la informaci\'f3n que define el estado del proceso, todos sus recursos que usa y que ha usado durante su ejecuci\'f3n.\
+\
+\'97 Creaci\'f3n de procesos con fork \'97 \
+Cuando un proceso crea otro, se establece una relaci\'f3n jer\'e1rquica que se denomina padre-hijo. A su vez, el proceso hijo (y el padre) podr\'edan crear otros procesos gener\'e1ndoselas un \'e1rbol de procesos.\
+Los procesos se identifican en el sistema mediante un process identifier (PID).\
+El SO decide aspectos como por ejemplo:\
+	- Recursos: El proceso hijo, \'bfcomparte los recursos del padre?\
+	- Planificaci\'f3n: El proceso hijo, \'bfse ejecuta antes que el padre?\
+	- Espacio de direcciones: \'bfQu\'e9 c\'f3digo ejecuta el proceso hijo? \'bfEl mismo? \'bfOtro?\
+\
+Crear proceso: fork en UNIX.\
+int fork();\
+	- Un proceso crea un proceso nuevo. Se crea una relaci\'f3n jer\'e1rquica padre-hijo.\
+	- El padre y el hijo se ejecutan de forma concurrente,\
+	- La memoria del hijo se inicializa con una copia de la memoria del padre.\
+		* C\'f3digo/ Datos/ Pila.\
+	- El hijo inicia la ejecuci\'f3n en el punto en el que estaba el padre en el momento de la creaci\'f3n.\
+		* Program Counter hijo = Program Counter padre.\
+	- Valor de retorno del fork es diferentes (es la forma de diferenciarlos en el c\'f3digo):\
+		* Padre recibe el PID del hijo.\
+		* Hijo recibe un 0.\
+		* Si hay un error el valor de fork ser\'e1 -1\
+\
+Creaci\'f3n de procesos y herencia.\
+	- El hijo hereda algunos aspectos del padre y otros no.\
+	- Hereda (recibe una copia privada de\'85)\
+		* El espacio de direcciones l\'f3gico (c\'f3digo, datos, pila, etc.).\
+			- La memoria f\'edsica es nueva, y contiene una copia de la del padre.\
+		* La tabla de programaci\'f3n de signals.\
+		* Los dispositivos virtuales.\
+		* El usuario / grupo (credenciales).\
+		* Variables de entorno.\
+	- No hereda (sino que se iniciativa con los valores correspondientes)\
+		* PID, PPID (PID de su padre).\
+		* Contadores internos de utilizaci\'f3n (Accounting).\
+		* Alarmas y signals pendiente (son propias del proceso).\
+\
+\'97 Mutaci\'f3n de ejecutable: exec en UNIX \'97\
+- Al hacer fork, el espacio de direcciones es el mismo. Si queremos ejecutar otro c\'f3digo, el proceso debe MUTAR (cambiar el binario de un proceso).\
+- execlp: Un proceso cambia (muta) su propio ejecutable por otro ejecutable (pero el proceso es el mismo).\
+	- Todo el contenido del espacio de direcciones cambia, c\'f3digo, datos, pila, etc.\
+		* Se reinicia el contador de programa a la primera instrucci\'f3n (main).\
+	- Se mantiene todo lo relacionado con la identidad del proceso.\
+		* Contadores de uso internos, signals pendientes, etc.\
+	- Se modifican aspectos relacionados con el ejecutable o el espacio de direcciones.\
+		* Se define por defecto la tabla de programaci\'f3n signals.\
+	\
+	int execlp (const char *file, const char *arg, \'85);\
+}

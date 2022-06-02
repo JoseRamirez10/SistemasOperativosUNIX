@@ -1,0 +1,138 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww9360\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \'97 \'bfQu\'e9 es un sistema operativo? \'97\
+	* Es un software que controla los recursos disponibles del sistema hardware que queremos utilizar y que act\'faa de intermediario entre las aplicaciones y el hardware.\
+		* I\ul nternamente\ulnone  define estructuras de datos para gestionar el HW y algoritmos para decidir utilizarlo.\
+		* \ul Externamente\ulnone  ofrece un conjunto de funciones para acceder a su funcionalidad (o servicios) de gesti\'f3n de recursos.\
+\
+\'97 Componentes del sistema. \'97\
+{{\NeXTGraphic Captura de Pantalla 2022-05-21 a la(s) 11.44.44.png \width12480 \height9460 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+Sistema. Suma del kernel y las aplicaciones.\
+Llamadas al sistema \'97> Kernel. El \'fanico que puede utilizar instrucciones \
+privilegiadas.\
+\
+\'97 Entorno del sistema operativo. \'97\
+\'bfQu\'e9 esperamos del sistema operativo?\
+	* Ofrece un entorno \'93sable\'94\
+		* Abstrae a los usuarios de las diferencias que hay entre los diferentes sistemas.\
+	* Ofrece un entorno seguro.\
+		* Protege el HW de accesos incorrectos y a unos usuarios de otros.\
+	* Ofrece un entorno eficiente.\
+		* Proporciona un uso eficiente de los recursos del sistema.\
+		* M\'faltiples usuarios acceden a un mismo sistema y tienen una sensaci\'f3n de acceso en \'93exclusiva\'94.\
+\
+\'bfQu\'e9 ofrece el sistema operativo?\
+	* Arranque (Boot/Starup)\
+		* Cargar SO en memoria.\
+		* Capturar interrupciones.\
+		* Inicializar acceso a sistema.\
+		* Ofrecen acceso a sistema:\
+			login/ shell/ entorno gr\'e1fico\
+	* Uso\
+		* Entorno de ejecuci\'f3n.\
+			Ejecuci\'f3n de programas ya existentes.\
+		* Entorno de desarrollo.\
+			Herramientas para generar nuevos programas\
+	* Finalizaci\'f3n (shutdown)\
+		* Se termina de forma controlada todos los procesos.\
+		* Se \'93apagan\'94 y/o sincronizan los dispositivos.\
+\
+\
+Arranque del sistema.\
+	* El hardware carga el SO (o una parte) al arrancar. Se conoce como boot.\
+		* El sistema puede tener m\'e1s de un SO instalado (en el disco) pero s\'f3lo uno ejecut\'e1ndose.\
+		* El SO se copia en memoria (todo o parte de \'e9l).\
+		* Inicializa las estructuras de datos necesarias (hardware/software) para controlar la m\'e1quina y ofrecer los servicios.\
+		* Las interrupciones hardware son capturadas por el SO.\
+		* Al final el sistema pone en marcha un programa que permite acceder al sistema.\
+			* Login (username/password)\
+			* Shell\
+			* Entorno gr\'e1fico\
+	\
+Entorno de desarrollo.\
+	* El SO ofrece, como parte de sus servicios, un entorno de trabajo interactivo. Fundamentalmente puede ser de dos tipos: int\'e9rprete de comandos o entorno gr\'e1fico.\
+	* Dependiente del sistema, este entorno puede formar parte del kernel o puede ser un programa aparte. En cualquier caso lo encontramos como parte del sistema para poder utilizarlo.\
+\
+Entorno \'93sable\'94, seguro y eficiente.\
+	* Durante el funcionamiento del sistema, estos son sus tres objetivos b\'e1sicos:\
+		* Usabilidad.\
+		* Seguridad.\
+		* Eficacia.\
+	* Tambi\'e9n deber\'edan serlo de vuestros programas.\
+		* Usables: \
+			* Si el usuario no lo ejecuta correctamente, habr\'e1 que dar un mensaje indic\'e1ndolo que sea claro y \'fatil.\
+			* Si alguna funci\'f3n de usuario  o llamada del sistema falla, el programa deber\'e1 dar un mensaje claro y \'fatil.\
+		* Seguro:\
+			* El programa no puede (o no deber\'eda) \'93fallar\'94 si el usuario lo utiliza de forma incorrecta, debe controlar todas las fuentes de error.\
+			* Mucho menos hacer fallar al sistema.\
+		* Eficiente:\
+			* Hay que plantearse la mejor forma de aprovechar los recursos de la m\'e1quina, pensando que los recursos que tiene el usuario son limitados (ejecuci\'f3n en entorno compartido).\
+\
+\'97 Formas de acceder al kernel \'97\
+C\'f3mo ofrecer un entorno seguro: \'93Modos\'94 de ejecuci\'f3n\
+	* El SO necesita una forma de garantizar su seguridad, la de hardware y la del resto de procesos.\
+	* Necesitamos instrucciones de lenguaje m\'e1quina privilegiadas que solo puede ejecutar el kernel.\
+	* El HW conoce cuando se est\'e1 ejecutando el kernel y cuando una aplicaci\'f3n de usuario. Hay una instrucci\'f3n de LM para pasar de un modo a otro.\
+	* El SO se ejecuta en un modo de ejecuci\'f3n privilegiado.\
+		* M\'ednimo 2 modos (pueden haber m\'e1s):\
+			* Modo de ejecuci\'f3n NO-privilegiado, user mode.\
+			* Modo de ejecuci\'f3n privilegiado, kernel mode.\
+		* Hay partes de la memoria s\'f3lo accesibles en modo privilegiado y determinadas instrucciones de lenguaje m\'e1quina solo se pueden ejecutar en modo privilegiado.\
+\
+Objetivo: Entender que son los modos de ejecuci\'f3n y porqu\'e9 los necesitamos.\
+\
+\'bfCu\'e1ndo se ejecuta c\'f3digo kernel?\
+	* Cuando una aplicaci\'f3n ejecuta una llamada a sistema.\
+	* Cuando una aplicaci\'f3n provoca una excepci\'f3n.\
+	* Cuando un dispositivo provoca una interrupci\'f3n.\
+\
+	* Estos eventos podr\'edan no tener lugar, y el SO no se ejecutar\'eda -> El SO perder\'eda el control del sistema.\
+	* El SO configura peri\'f3dicamente la interrupci\'f3n de reloj para evitar perder el control y que un usuario puede acaparar todos los recursos.\
+		* Cada 10 ms por ejemplo.\
+		* T\'edpicamente se ejecuta la planificaci\'f3n del sistema.\
+\
+Acceso al c\'f3digo del kernel.\
+	* El kernel es un c\'f3digo guiado por eventos.\
+		* Interrupci\'f3n del flujo actual de usuario para realizar una tarea del SO.\
+	* Tres forma de acceder al c\'f3digo del SO (Visto en EC):\
+		* Interrupciones generadas por el hardware (teclado, reloj, DMA, \'85)\
+			- as\'edncronas (entre dos instrucciones de lenguaje m\'e1quina).\
+		* Los errores de software generan excepciones (divisi\'f3n por cero, fallo de p\'e1gina, \'85)\
+			- s\'edncronas\
+			- provocadas por la ejecuci\'f3n de una instrucci\'f3n de lenguaje m\'e1quina.\
+			- se resuelven (si se puede) dentro de la instrucci\'f3n.\
+		* Peticiones de servicio de programas: Llamada a sistema.\
+			- s\'edncronas.\
+			- provocadas por una instrucci\'f3n expl\'edcitamente (de lenguaje m\'e1quina)\
+			- para perder un servicio al SO (llamada al sistema)\
+		* Desde el punto de vista hardware son muy parecidas (casi iguales)\
+\
+\
+\'97 Llamadas al sistema \'97\
+Generaci\'f3n de ejecutables:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Captura de Pantalla 2022-05-21 a la(s) 12.18.53.png \width12480 \height9460 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+Llamadas al sistema.\
+	* Conjunto de funciones que ofrece el kernel para acceder a sus servicios.\
+	* Desde el punto de vista del programador es igual al interfaz de cualquier librer\'eda de lenguaje.\
+	* Normalmente los lenguajes ofrecen un API de m\'e1s alto nivel que es m\'e1s c\'f3moda de utilizar y ofrece m\'e1s funcionalidades.\
+		Ejemplo: Librer\'eda de C: printf en lugar de write.\
+			* Nota: La librer\'eda se ejecuta en modo usuario y no puede acceder al dispositivo directamente.\
+	Ejemplos:\
+		* Win32 API para Windows.\
+		* POSIX APi para sistemas POSIX (UNIX, Linux, Mac OS X).\
+		* Java API para la Java Virtual Machine.\
+\
+\
+\
+}
