@@ -8,7 +8,7 @@ void codigoHijo(int );
 #define num_procs 2
 int main(){
 	int i, ret;
-	for (i = 0; i < num_procs, i++){
+	for (i = 0; i < num_procs; i++){
 		if ((ret=fork())<0)
 			control_error(); // Hubo un error
 		if (ret == 0){ // Si es igual a 0 es el hijo
