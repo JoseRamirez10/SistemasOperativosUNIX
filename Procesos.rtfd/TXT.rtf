@@ -145,4 +145,34 @@ Creaci\'f3n de procesos y herencia.\
 		* Se define por defecto la tabla de programaci\'f3n signals.\
 	\
 	int execlp (const char *file, const char *arg, \'85);\
+\
+\
+\'97 Waitpid y Exit \'97\
+Terminar ejecuci\'f3n / Esperar que termine\
+* Un proceso puede acabar su ejecuci\'f3n voluntaria (exit) o involuntaria (signals)\
+* Cuando un proceso quiere finalizar su ejecuci\'f3n (voluntariamente) liberar sus recursos y liberar las estructuras de kernel reservadas para \'e9l, se ejecuta la llamada a sistema exit.\
+* Si queremos sincronizar el padre con la finalizaci\'f3n del hijo, podemos usar waitpid. El proceso espera (si es necesario se bloque el proceso) a que termine un hijo cualquiera o uno concreto.\
+	- waitpid(-1,NULL,0) -> Esperar (con bloqueo si es necesario) a un hijo cualquiera.\
+		* -1 -> Cualquier hijo\
+	- wiatpid (pid_hijo, NULL, 0 ) -> Esperar (con bloqueo si es necesario) a un hijo con pid=pid_hijo.\
+* El hijo puede enviar informaci\'f3n de finalizaci\'f3n (exit code) al padre mediante la llamada a sistema exit y el padre la recoge mediante wait o waitpid.\
+	- El SO hace de intermediario, la almacena hasta que el padre la consulta.\
+	- Mientras el padre no la consulta, el PCB no se libera y el proceso se queda en estado ZOMBIE (defunct).\
+		* Conviene hacer wait/ waitpid de los procesos que creamos para liberar los recursos ocupados por el kernel.\
+	- Si un proceso muere sin liberar los PCB\'92s de sus hijos el proceso init del sistema los libera\
+\
+	void exit(int);\
+	pid_t waitpid(pit_t pid, int *status, int option);\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Captura de Pantalla 2022-06-08 a la(s) 12.41.45.png \width15720 \height10860 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Captura de Pantalla 2022-06-08 a la(s) 12.47.59.png \width15720 \height10860 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
 }
