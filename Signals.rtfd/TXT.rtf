@@ -12,5 +12,32 @@
 {{\NeXTGraphic Captura de Pantalla 2022-06-08 a la(s) 13.45.07.png \width11440 \height3080 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}\
 \
+\'97 Tipos de signals y tratamientos (I) \'97\
+- Cada posible evento tiene un signal asociado.\
+	* Los eventos y signals asociados est\'e1n predefinidos por el kernel.\
+		- El signal es un n\'famero, pero existen constantes definidas para usarlas en los programas o en l\'ednea de comandos.\
+- Hay dos signals que no est\'e1n asociados a ning\'fan evento para que el programador los use como quiera -> SIGUSR1 y SIGUSR2.\
+- Cada proceso tiene un tratamiento asociado a cada signal.\
+	* Tratamientos por defecto.\
+	* El proceso puede capturar (modificar el tratamiento asociado) todos los tipos de signals excepto SIGKILL y SIGSTOP.\
+		* SIGKILL -> Mata un proceso.\
+		* SIGSTOP -> Detiene un proceso.\
 \
+Tipos de signals y tratamientos (2).\
+	Algunos signals:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Captura de Pantalla 2022-06-09 a la(s) 11.48.49.png \width10160 \height5360 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+- Usos que les daremos principalmente:\
+	* Sincronizaci\'f3n de procesos.\
+	* Control del tiempo (alarmas).\
+\
+Tipos de signals y tratamientos (3).\
+	- El tratamiento de un signal funciona como una interrupci\'f3n provocada por software:\
+		* Al recibir un signal el proceso interrumpe la ejecuci\'f3n del c\'f3digo, pasa a ejecutar el tratamiento que ese tipo de signal tenga asociado y al acabar (si sobrevive) continua donde estaba.\
+	- Los procesos pueden bloquear/ desbloquear la recepci\'f3n de cada signal excepto SIGKILL y SIGSTOP (tampoco se pueden bloquear los signals SIGFPE, SIGILL y SIGSEGV s\'ed son provocados por una excepci\'f3n).\
+		* Cuando un proceso bloquea un signal, si se le env\'eda ese signal el proceso no lo recibe y el sistema lo marca como pendiente de tratar.\
+			- bitmap asociado al proceso, s\'f3lo recuerda un signal de cada tipo.\
+		* Cuando un proceso desbloquea un signal recibir\'e1 y tratar\'e1 el signal pendiente de ese tipo.\
 }
