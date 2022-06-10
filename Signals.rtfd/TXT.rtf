@@ -27,7 +27,8 @@ Tipos de signals y tratamientos (2).\
 	Algunos signals:\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 \cf0 {{\NeXTGraphic Captura de Pantalla 2022-06-09 a la(s) 11.48.49.png \width10160 \height5360 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
 \
 - Usos que les daremos principalmente:\
 	* Sincronizaci\'f3n de procesos.\
@@ -40,4 +41,60 @@ Tipos de signals y tratamientos (3).\
 		* Cuando un proceso bloquea un signal, si se le env\'eda ese signal el proceso no lo recibe y el sistema lo marca como pendiente de tratar.\
 			- bitmap asociado al proceso, s\'f3lo recuerda un signal de cada tipo.\
 		* Cuando un proceso desbloquea un signal recibir\'e1 y tratar\'e1 el signal pendiente de ese tipo.\
+\
+\
+\'97 Herramientas de Signals \'97\
+\
+Linux: Interfaz relacionada con signals\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Captura de Pantalla 2022-06-09 a la(s) 20.56.16.png \width10160 \height4120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+* Fichero con signals: /usr/include/bits/signum.h\
+* Hay varios interfaces de gesti\'f3n de signals incompatibles y con diferentes problemas, Linux implementa el interfaz POSIX.\
+\
+Interfaz: Enviar / Capturar signals\
+	Para enviar:\
+		int kill (int pid, int signum);\
+			* signum -> SIGUSR1, SIGUSR2, etc\'85\
+		* Requerimento: Conocer el PID del proceso destino.\
+	Para capturar un SIGNAL y ejecutar una funci\'f3n cuando llegue:\
+		int sigaction (int signum, struct sigaction *tratamiento,\
+		struct sigaction *tratamiento_antiguo);\
+			* signum -> SIGUSR1, SIGUSR2, etc\'85\
+			* tratamiento -> struct sigaction que describe qu\'e9 hacer al recibir el signal.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 			* tratamiento_antiguo -> struct sigaction que describe qu\'e9 se hacia hasta ahora. Este par\'e1metro puede ser NULL si no interesa obtener el tratamiento antiguo.\
+\
+A env\'eda un signal a B\
+* El proceso A env\'eda (en alg\'fan momento) un signal a B y B ejecuta una acci\'f3n al recibirlo.\
+\
+\ul Proceso A\ulnone \
+\'85\
+Kill (pid, evento);\
+\'85\
+\
+\ul Proceso B\ulnone  \
+int main()\{\
+	struct sigaction trat, viejo_trat;\
+	/* c\'f3digo para incializrr trat */\
+	sigaction(evento, &trat, &viejo_trat);\
+	\'85\
+\}\
+\
+Definici\'f3n de struct sigaction\
+* struct sigaction: varios campos. Nos fijaremos s\'f3lo en 3:\
+	- sa_handler: puede tomar 3 valores:\
+		* SIG_IGN: ignorar el signal al recibirlo.\
+		* SIG_DFL: usar el tratamiento por defecto.\
+		* funci\'f3n de usuario con una cabecera predefinida: void nombre_funcion(int s);\
+			IMPORTANTE: la funci\'f3n la invoca el kernel. El par\'e1metro se corresponde con el signal recibido (SGUSR1, SIGUSR2, etc\'85), as\'ed se puede asociar la misma funci\'f3n a varios signals y hacer un tratamiento diferenciado dentro de ella.\
+	- sa_mask: signals que se a\'f1aden a la m\'e1scara de signals que el proceso tiene bloqueados.\
+		* Si la m\'e1scara est\'e1 vac\'eda s\'f3lo se a\'f1ade el signal que se est\'e1 capturando.\
+		* Al salir del tratamiento se restaura la m\'e1scara que hab\'eda antes de entrar.\
+	- sa_flags: para configurar el comportamiento (si vale 0 se usa la configuraci\'f3n por defecto.) Algunos flags:\
+		* SA_RESETHAND: despu\'e9s de tratar el signal se restaura el tratamiento por defecto del signal.\
+		* SA_RESTART: si un proceso bloqueado en una llamada a sistema recibe \'e9l signal se reinicia la llamada que lo ha bloqueado.\
+\
+\
 }
